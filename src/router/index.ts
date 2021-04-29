@@ -29,16 +29,4 @@ const router = new VueRouter({
   routes
 })
 
-router.beforeEach((to, from, next) => {
-  if (to.meta.requireAuth) { // 需要认证
-    if (localStorage.getItem('user')) { // 有user
-      next()
-    } else { // 没有user，转去登录
-      next({ path: 'login' })
-    }
-  } else { // 不需要认证
-    next()
-  }
-})
-
 export default router
