@@ -1,18 +1,37 @@
 <template>
-  <div class="home">
-    <img alt="Vue logo" src="../assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js + TypeScript App"/>
-  </div>
+  <div>{{ message }}</div>
 </template>
 
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator'
-import HelloWorld from '@/components/HelloWorld.vue' // @ is an alias to /src
+import { getUser, requestLogout } from '@/api/api'
 
-@Component({
-  components: {
-    HelloWorld
+@Component
+export default class Home extends Vue {
+  message = ''
+
+  mounted () {
+    const param = {
+      username: this.$store.state.user
+    }
+    getUser(param).then(res => {
+      if (parseInt(res.code) === 200) {
+        this.message = res.data
+      } else {
+        if (parseInt(res.code) === 202) {
+          requestLogout(param).then(res => {
+            if (parseInt(res.code) === 200) {
+              this.$router.push({ path: '/login' })
+              this.$store.commit('REMOVE_TOKEN')
+            }
+          })
+        }
+      }
+    })
   }
-})
-export default class Home extends Vue {}
+}
 </script>
+
+<style scoped lang="scss">
+
+</style>
