@@ -11,7 +11,33 @@ const routes: Array<RouteConfig> = [
     meta: {
       requireAuth: true
     },
-    component: Home
+    component: Home,
+    children: [
+      {
+        path: 'news',
+        name: '新闻管理',
+        meta: {
+          requireAuth: true
+        },
+        component: () => import(/* webpackChunkName: "about" */ '../views/News.vue')
+      },
+      {
+        path: 'summary',
+        name: '简报管理',
+        meta: {
+          requireAuth: true
+        },
+        component: () => import(/* webpackChunkName: "about" */ '../views/Summary.vue')
+      },
+      {
+        path: 'gather',
+        name: '汇总管理',
+        meta: {
+          requireAuth: true
+        },
+        component: () => import(/* webpackChunkName: "about" */ '../views/Gather.vue')
+      }
+    ]
   },
   {
     path: '/login',
