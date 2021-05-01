@@ -60,7 +60,7 @@ export default class Home extends Vue {
 }
 .home-aside{
   width: 220px !important;
-  height: 800px;
+  height: 831px;
 }
 .page-header{
   text-align: left;
