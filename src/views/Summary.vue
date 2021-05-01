@@ -19,7 +19,7 @@
         width="250">
       </el-table-column>
       <el-table-column
-        label="文章内容"
+        label="文章摘要"
         width="350">
         <template slot-scope="scope">
           <div>{{ scope.row.summary.slice(0,50)+"..."}}</div>
@@ -31,6 +31,7 @@
         width="300">
       </el-table-column>
       <el-table-column
+        fixed="right"
         sortable="custom"
         prop="publishTime"
         label="发表时间"

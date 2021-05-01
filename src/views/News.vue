@@ -36,17 +36,18 @@
         </template>
       </el-table-column>
       <el-table-column
-        sortable="custom"
-        prop="publishTime"
-        label="发表时间"
-        width="160">
-      </el-table-column>
-      <el-table-column
         label="图片链接"
         width="200">
         <template slot-scope="scope">
           <div>{{ scope.row.images.length>2? scope.row.images.slice(0,80)+"...]":scope.row.images}}</div>
         </template>
+      </el-table-column>
+      <el-table-column
+        fixed="right"
+        sortable="custom"
+        prop="publishTime"
+        label="发表时间"
+        width="160">
       </el-table-column>
     </el-table>
     <el-pagination
@@ -130,7 +131,7 @@ export default class News extends Vue {
     this.dialogVisible = true
     this.currentTitle = row.title
     this.currentContent = row.content.replaceAll('　　', '　　<br>')
-    this.currentImages = row.images.replaceAll(',', ', <br>')
+    this.currentImages = row.images.slice(1, -1).replaceAll(',', ', <br>')
   }
 
   handleSizeChange (val: number) {

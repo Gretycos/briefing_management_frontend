@@ -98,7 +98,7 @@ export default class Gather extends Vue {
     // console.log(row)
     this.dialogVisible = true
     this.currentDate = row.publishDate
-    this.currentTopic = row.kwDate
+    this.currentTopic = row.kwDate.slice(1, -1).replaceAll('[', '').replaceAll('],', '<br>').slice(0, -1)
   }
 
   handleSizeChange (val: number) {

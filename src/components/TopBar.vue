@@ -3,11 +3,12 @@
     <div class="top-bar-title">今日简报后台管理系统</div>
     <el-dropdown>
       <span class="el-dropdown-link">
-        管理员<i class="el-icon-arrow-down el-icon--right"></i>
+        {{ admin }}<i class="el-icon-arrow-down el-icon--right"></i>
       </span>
       <el-dropdown-menu slot="dropdown">
-        <el-dropdown-item>修改密码</el-dropdown-item>
-        <el-dropdown-item>登出</el-dropdown-item>
+<!--        <el-dropdown-item>修改密码</el-dropdown-item>-->
+<!--        父组件想在子组件上监听自己的click的话，需要加上native修饰符-->
+        <el-dropdown-item @click.native="handleLogout">登出</el-dropdown-item>
       </el-dropdown-menu>
     </el-dropdown>
   </div>
@@ -15,10 +16,26 @@
 
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator'
+import { requestLogout } from '@/api/api'
 
 @Component
 export default class TopBar extends Vue {
+  admin = this.$store.state.user
 
+  handleLogout () {
+    const param = {
+      username: this.admin
+    }
+    requestLogout(param).then(res => {
+      this.$router.push({ path: '/login', replace: true })
+      this.$store.commit('REMOVE_TOKEN')
+    }).catch((error) => {
+      this.$message({
+        message: error,
+        type: 'error'
+      })
+    })
+  }
 }
 </script>
 

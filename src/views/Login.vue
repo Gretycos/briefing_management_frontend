@@ -71,22 +71,15 @@ export default class Login extends Vue {
     myForm.validate((valid: boolean) => {
       if (valid) {
         requestLogin(this.form).then(res => {
-          if (parseInt(res.code) === 200) {
-            this.$store.commit('SET_USER', res.data.username)
-            this.$message({
-              message: res.msg,
-              type: 'success'
-            })
-            this.$router.push({ path: '/' })
-          } else {
-            this.$message({
-              message: res.msg,
-              type: 'error'
-            })
-          }
-        }).catch(() => {
+          this.$store.commit('SET_USER', res.username)
           this.$message({
-            message: '服务器异常',
+            message: '登录成功',
+            type: 'success'
+          })
+          this.$router.push({ path: '/' })
+        }).catch((error) => {
+          this.$message({
+            message: error,
             type: 'error'
           })
         })
