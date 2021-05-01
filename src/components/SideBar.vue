@@ -10,7 +10,7 @@
     active-text-color="#ffd04b"
     :router="true">
     <el-menu-item index="/news">
-      <i class="el-icon-location"></i>
+      <i class="el-icon-menu"></i>
       <span slot="title">新闻管理</span>
     </el-menu-item>
     <el-submenu index="/summary">
