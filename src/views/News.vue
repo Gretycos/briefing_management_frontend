@@ -1,5 +1,34 @@
 <template>
   <div class="news-container">
+    <div class="spider-time-container">
+      <div class="spider-time-title">爬虫定时：每天</div>
+      <el-select v-model="hour" placeholder="请选择小时" @change="handleHourChange" size="small">
+        <el-option
+          v-for="item in hours"
+          :key="item"
+          :label="item"
+          :value="item">
+        </el-option>
+      </el-select>时
+      <el-select v-model="minute" placeholder="请选择分钟" @change="handleMinuteChange" size="small">
+        <el-option
+          v-for="item in minutes"
+          :key="item"
+          :label="item"
+          :value="item">
+        </el-option>
+      </el-select>分
+      <div class="spider-control">
+        <div class="spider-control-state" v-if="newsState === false">
+          未有今日数据
+          <el-button type="primary" :loading="loadingTodayNews" @click="handleLoadingTodayNews" size="small">爬取今日数据</el-button>
+        </div>
+        <div class="spider-control-state" v-if="newsState === true">
+          已有今日数据
+          <el-button type="primary" :loading="loadingTodayNews" @click="handleLoadingTodayNews" size="small">再次爬取今日数据</el-button>
+        </div>
+      </div>
+    </div>
     <el-table
       :data="tableData"
       @sort-change="onSortChange"
@@ -82,7 +111,7 @@
 
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator'
-import { getNews } from '@/api/api'
+import { getNews, getNewsState, getSpiderTime, updateSpiderTime, generateNews } from '@/api/api'
 
 @Component
 export default class News extends Vue {
@@ -95,6 +124,10 @@ export default class News extends Vue {
   currentTitle = ''
   currentContent = ''
   currentImages = ''
+  minute = 0
+  hour = 0
+  newsState = false
+  loadingTodayNews = false
 
   mounted () {
     const param = {
@@ -103,6 +136,8 @@ export default class News extends Vue {
       order: this.order
     }
     this.getNewsData(param)
+    this.getSpiderClock()
+    this.getTodayNewsState()
   }
 
   onSortChange (change: any) {
@@ -155,6 +190,57 @@ export default class News extends Vue {
     this.getNewsData(param)
   }
 
+  get minutes () {
+    const a: any = Array.from(Array(60), (v, k) => k)
+    a.unshift('*') // 头部插入
+    return a
+  }
+
+  get hours () {
+    const a: any = Array.from(Array(24), (v, k) => k)
+    a.unshift('*')
+    return a
+  }
+
+  handleMinuteChange (val: any) {
+    this.minute = val
+    const param = {
+      minute: this.minute,
+      hour: this.hour
+    }
+    this.updateSpiderClock(param)
+  }
+
+  handleHourChange (val: any) {
+    this.hour = val
+    const param = {
+      minute: this.minute,
+      hour: this.hour
+    }
+    this.updateSpiderClock(param)
+  }
+
+  handleLoadingTodayNews () {
+    this.loadingTodayNews = true
+    generateNews().then(res => {
+      this.loadingTodayNews = false
+      if (parseInt(res) === 1) {
+        this.$message({
+          message: '爬取成功',
+          type: 'success',
+          duration: 1500,
+          onClose: () => { this.$router.go(0) }
+        })
+      }
+    }).catch((error) => {
+      this.loadingTodayNews = false
+      this.$message({
+        message: error,
+        type: 'error'
+      })
+    })
+  }
+
   getNewsData (param: any) {
     getNews(param).then(res => {
       this.tableData = res.newsList
@@ -166,10 +252,72 @@ export default class News extends Vue {
       })
     })
   }
+
+  getSpiderClock () {
+    getSpiderTime().then(res => {
+      this.minute = res.minute
+      this.hour = res.hour
+    }).catch((error) => {
+      this.$message({
+        message: error,
+        type: 'error'
+      })
+    })
+  }
+
+  updateSpiderClock (param: any) {
+    updateSpiderTime(param).then(res => {
+      this.$message({
+        message: '修改时间成功, 每日 ' + param.hour + '时' + param.minute + '分 自动执行爬虫',
+        type: 'success'
+      })
+    }).catch((error) => {
+      this.$message({
+        message: error,
+        type: 'error'
+      })
+    })
+  }
+
+  getTodayNewsState () {
+    getNewsState().then(res => {
+      this.newsState = res
+    }).catch((error) => {
+      this.$message({
+        message: error,
+        type: 'error'
+      })
+    })
+  }
 }
 </script>
 
 <style scoped lang="scss">
+.spider-time-container{
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  margin-bottom: 10px;
+}
+.el-select{
+  margin-left: 5px;
+  margin-right: 5px;
+  width: 70px !important;
+}
+.spider-control{
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  margin-left: 30px;
+  .spider-control-state{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+  }
+  .el-button{
+    margin-left: 10px;
+  }
+}
 .dialog-container{
   display: flex;
   flex-direction: column;

@@ -1,5 +1,27 @@
 <template>
   <div class="summary-container">
+    <div class="summary-control-container">
+      <div class="summary-control-topic">
+        <div class="summary-control-state" v-if="topicState === false">
+          未有今日主题
+          <el-button type="primary" :loading="loadingTodayTopic" @click="handleLoadingTodayTopic" size="small">发现今日主题</el-button>
+        </div>
+        <div class="summary-control-state" v-if="topicState === true">
+          已有今日主题
+          <el-button type="primary" :loading="loadingTodayTopic" @click="handleLoadingTodayTopic" size="small">重新发现今日主题</el-button>
+        </div>
+      </div>
+      <div class="summary-control-summary">
+        <div class="summary-control-state" v-if="summaryState === false">
+          未有今日摘要
+          <el-button type="primary" :loading="loadingTodaySummary" @click="handleLoadingTodaySummary" size="small">生成今日摘要</el-button>
+        </div>
+        <div class="summary-control-state" v-if="summaryState === true">
+          已有今日摘要
+          <el-button type="primary" :loading="loadingTodaySummary" @click="handleLoadingTodaySummary" size="small">重新生成今日摘要</el-button>
+        </div>
+      </div>
+    </div>
     <el-table
       :data="tableData"
       @sort-change="onSortChange"
@@ -70,7 +92,7 @@
 
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator'
-import { getSummary } from '@/api/api'
+import { generateSummary, generateTopic, getSummary, getSummaryState, getTopicState } from '@/api/api'
 
 @Component
 export default class Summary extends Vue {
@@ -83,6 +105,10 @@ export default class Summary extends Vue {
   currentTitle = ''
   currentTopic = ''
   currentContent = ''
+  topicState = false
+  loadingTodayTopic = false
+  summaryState = false
+  loadingTodaySummary = false
 
   mounted () {
     const param = {
@@ -91,6 +117,8 @@ export default class Summary extends Vue {
       order: this.order
     }
     this.getSummaryData(param)
+    this.getTodayTopicState()
+    this.getTodaySummaryState()
   }
 
   onSortChange (change: any) {
@@ -143,6 +171,48 @@ export default class Summary extends Vue {
     this.getSummaryData(param)
   }
 
+  handleLoadingTodayTopic () {
+    this.loadingTodayTopic = true
+    generateTopic().then(res => {
+      this.loadingTodayTopic = false
+      if (parseInt(res) === 1) {
+        this.$message({
+          message: '生成成功',
+          type: 'success',
+          duration: 1500,
+          onClose: () => { this.$router.go(0) }
+        })
+      }
+    }).catch((error) => {
+      this.loadingTodayTopic = false
+      this.$message({
+        message: error,
+        type: 'error'
+      })
+    })
+  }
+
+  handleLoadingTodaySummary () {
+    this.loadingTodaySummary = true
+    generateSummary().then(res => {
+      this.loadingTodaySummary = false
+      if (parseInt(res) === 1) {
+        this.$message({
+          message: '生成成功',
+          type: 'success',
+          duration: 1500,
+          onClose: () => { this.$router.go(0) }
+        })
+      }
+    }).catch((error) => {
+      this.loadingTodaySummary = false
+      this.$message({
+        message: error,
+        type: 'error'
+      })
+    })
+  }
+
   getSummaryData (param: any) {
     getSummary(param).then(res => {
       this.tableData = res.summaryList
@@ -154,10 +224,41 @@ export default class Summary extends Vue {
       })
     })
   }
+
+  getTodayTopicState () {
+    getTopicState().then(res => {
+      this.topicState = res
+    }).catch((error) => {
+      this.$message({
+        message: error,
+        type: 'error'
+      })
+    })
+  }
+
+  getTodaySummaryState () {
+    getSummaryState().then(res => {
+      this.summaryState = res
+    }).catch((error) => {
+      this.$message({
+        message: error,
+        type: 'error'
+      })
+    })
+  }
 }
 </script>
 
 <style scoped lang="scss">
+.summary-control-container{
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  margin-bottom: 10px;
+}
+.summary-control-summary{
+  margin-left: 30px;
+}
 .dialog-container{
   display: flex;
   flex-direction: column;
