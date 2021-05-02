@@ -165,7 +165,7 @@ export default class News extends Vue {
     // console.log(row)
     this.dialogVisible = true
     this.currentTitle = row.title
-    this.currentContent = row.content.replaceAll('　　', '　　<br>')
+    this.currentContent = row.content.replaceAll('　　', '　　<br>').replaceAll('。 ', '。<br>').replaceAll('。\\n', '。<br>')
     this.currentImages = row.images.slice(1, -1).replaceAll(',', ', <br>')
   }
 
