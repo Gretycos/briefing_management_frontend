@@ -191,7 +191,7 @@ export default class News extends Vue {
   }
 
   get minutes () {
-    const a = [10, 20, 30, 40, 50]
+    const a = [0, 10, 20, 30, 40, 50]
     return a
   }
 
