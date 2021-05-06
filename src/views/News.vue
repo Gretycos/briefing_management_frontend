@@ -191,8 +191,7 @@ export default class News extends Vue {
   }
 
   get minutes () {
-    const a: any = Array.from(Array(60), (v, k) => k)
-    a.unshift('*') // 头部插入
+    const a = [10, 20, 30, 40, 50]
     return a
   }
 
