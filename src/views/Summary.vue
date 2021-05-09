@@ -72,6 +72,10 @@
     <el-dialog
       :title="currentTitle"
       :visible.sync="dialogVisible"
+      :close-on-click-modal="false"
+      :close-on-press-escape="false"
+      :show-close="false"
+      @closed="closedDialog"
       width="60%">
       <div class="dialog-container">
         <div class="dialog-item-container">
@@ -80,19 +84,22 @@
         </div>
         <div class="dialog-item-container">
           <div class="dialog-title">文章摘要</div>
-          <div class="dialog-item" v-html="currentContent"></div>
+          <div class="dialog-item" v-html="currentContent" v-if="!editing"></div>
+          <el-input type="textarea" autosize v-model="currentContent" maxlength="3000" show-word-limit v-if="editing"></el-input>
         </div>
       </div>
       <span slot="footer" class="dialog-footer">
-    <el-button type="primary" @click="dialogVisible = false">确 定</el-button>
-  </span>
+        <el-button type="primary" @click="editing = true" v-if="!editing">编辑</el-button>
+        <el-button type="primary" @click="dialogVisible = false" v-if="!editing">确 定</el-button>
+        <el-button type="primary" @click="editSummary" v-if="editing">保存</el-button>
+      </span>
     </el-dialog>
   </div>
 </template>
 
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator'
-import { generateSummary, generateTopic, getSummary, getSummaryState, getTopicState } from '@/api/api'
+import { generateSummary, generateTopic, getSummary, getSummaryState, getTopicState, updateSummary } from '@/api/api'
 
 @Component
 export default class Summary extends Vue {
@@ -102,13 +109,16 @@ export default class Summary extends Vue {
   pageSize = 20
   order = 0
   dialogVisible = false
+  currentArticleId = ''
   currentTitle = ''
   currentTopic = ''
   currentContent = ''
+  originalContent = ''
   topicState = false
   loadingTodayTopic = false
   summaryState = false
   loadingTodaySummary = false
+  editing = false
 
   mounted () {
     const param = {
@@ -145,9 +155,60 @@ export default class Summary extends Vue {
   onRowClick (row: any) {
     // console.log(row)
     this.dialogVisible = true
+    this.currentArticleId = row.articleId
     this.currentTitle = row.title
     this.currentTopic = row.kw.replace('[', '').replace(']', '')
     this.currentContent = row.summary.replaceAll('　　', '　　<br>')
+    this.originalContent = row.summary.replaceAll('　　', '　　<br>')
+  }
+
+  editSummary () {
+    if (this.currentContent === this.originalContent) {
+      this.dialogVisible = false
+    } else {
+      this.$confirm('内容发生修改，是否继续？', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        const param = {
+          articleId: this.currentArticleId,
+          summary: this.currentContent
+        }
+        updateSummary(param).then(res => {
+          if (parseInt(res) === 1) {
+            this.$message({
+              message: '更新成功',
+              type: 'success',
+              duration: 1500,
+              onClose: () => { this.$router.go(0) }
+            })
+          } else {
+            this.$message({
+              message: '更新错误',
+              type: 'error',
+              duration: 1500,
+              onClose: () => { this.$router.go(0) }
+            })
+          }
+          this.dialogVisible = false
+        }).catch((error) => { // 服务器错误
+          this.$message({
+            message: error,
+            type: 'error'
+          })
+        })
+      }).catch(() => {
+        this.$message({
+          message: '操作取消',
+          type: 'info'
+        })
+      })
+    }
+  }
+
+  closedDialog () {
+    this.editing = false
   }
 
   handleSizeChange (val: number) {
