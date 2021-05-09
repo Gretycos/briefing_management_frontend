@@ -2,14 +2,15 @@
   <div class="news-container">
     <div class="spider-time-container">
       <div class="spider-time-title">爬虫定时：每天</div>
-      <el-popover
-        title="提示"
-        width="300"
-        trigger="hover"
-        content="0点-8点基于昨日数据；其余时间基于今日数据。
-        「主题发现」会在「爬虫」执行后的第5分钟开始；「简报生成」会在「主题发现」后的第10分钟开始。"
-        placement="top-start">
-        <div class="spider-time-selector" slot="reference">
+      <el-tooltip
+        effect="light"
+        placement="bottom">
+        <div slot="content" style="font-size: 16px;">
+          0点-8点基于昨日数据；其余时间基于今日数据。<br/>
+          「主题发现」会在「爬虫」执行后的第5分钟开始；<br/>
+          「简报生成」会在「主题发现」后的第10分钟开始。
+        </div>
+        <div class="spider-time-selector">
           <el-select v-model="hour" placeholder="" @change="handleHourChange" size="small">
             <el-option
               v-for="item in hours"
@@ -27,7 +28,7 @@
             </el-option>
           </el-select>分
         </div>
-      </el-popover>
+      </el-tooltip>
       <div class="spider-control">
         <div class="spider-control-state" v-if="newsState === false">
           未有今日数据
@@ -108,8 +109,10 @@
           <div class="dialog-item" v-html="currentContent"></div>
         </div>
         <div class="dialog-item-container">
-          <div class="dialog-title">图片链接</div>
-          <div class="dialog-item" v-html="currentImages"></div>
+          <div class="dialog-title">图片</div>
+          <div class="dialog-item">
+            <img :src="url" v-for="(url,idx) in this.currentImagesList" :key="idx">
+          </div>
         </div>
       </div>
       <span slot="footer" class="dialog-footer">
@@ -134,6 +137,7 @@ export default class News extends Vue {
   currentTitle = ''
   currentContent = ''
   currentImages = ''
+  currentImagesList = []
   minute = 0
   hour = 0
   newsState = false
@@ -146,8 +150,6 @@ export default class News extends Vue {
       order: this.order
     }
     this.getNewsData(param)
-    this.getSpiderClock()
-    this.getTodayNewsState()
   }
 
   onSortChange (change: any) {
@@ -177,6 +179,10 @@ export default class News extends Vue {
     this.currentTitle = row.title
     this.currentContent = row.content.replaceAll('　　', '　　<br>').replaceAll('。 ', '。<br>').replaceAll('。\\n', '。<br>')
     this.currentImages = row.images.slice(1, -1).replaceAll(',', ', <br>')
+    const imagesList = JSON.parse(row.images)
+    this.currentImagesList = imagesList.map(item => {
+      return 'http://39.105.43.226:8091/images' + item
+    })
   }
 
   handleSizeChange (val: number) {
@@ -253,6 +259,8 @@ export default class News extends Vue {
     getNews(param).then(res => {
       this.tableData = res.newsList
       this.total = res.total
+      this.getSpiderClock()
+      this.getTodayNewsState()
     }).catch((error) => {
       this.$message({
         message: error,
@@ -307,6 +315,9 @@ export default class News extends Vue {
   align-items: center;
   margin-bottom: 10px;
 }
+.spider-time-selector{
+  outline: none;
+}
 .el-select{
   margin-left: 5px;
   margin-right: 5px;
@@ -338,6 +349,10 @@ export default class News extends Vue {
   .dialog-title{
     font-size: 15px;
     font-weight: bolder;
+  }
+  img{
+    width: 100%;
+    object-fit: contain;
   }
 }
 </style>

@@ -8,7 +8,7 @@
       <el-form-item label="密码" prop="password">
         <el-input type="password" v-model.trim="form.password" auto-complete="off" placeholder="管理员密码"></el-input>
       </el-form-item>
-      <el-form-item label="记住我" class="login-remember">
+      <el-form-item label="记住我7日" class="login-remember">
         <el-checkbox v-model="form.rememberMe"></el-checkbox>
       </el-form-item>
       <el-button type="primary" @click="submitForm">提交</el-button>
