@@ -1,28 +1,43 @@
 <template>
   <div class="summary-container">
     <div class="summary-control-container">
-      <div class="summary-control-topic">
-        <div class="summary-control-state" v-if="topicState === false">
-          未有今日主题
-          <el-button type="primary" :loading="loadingTodayTopic" @click="handleLoadingTodayTopic" size="small">发现今日主题</el-button>
+      <el-tooltip
+        effect="light"
+        placement="bottom">
+        <div slot="content" style="font-size: 16px;">
+          主题发现需等待约5分钟
         </div>
-        <div class="summary-control-state" v-if="topicState === true">
-          已有今日主题
-          <el-button type="primary" :loading="loadingTodayTopic" @click="handleLoadingTodayTopic" size="small">重新发现今日主题</el-button>
+        <div class="summary-control-topic">
+          <div class="summary-control-state" v-if="topicState === false">
+            未有今日主题
+            <el-button type="primary" :loading="loadingTodayTopic" @click="handleLoadingTodayTopic" size="small">发现今日主题</el-button>
+          </div>
+          <div class="summary-control-state" v-if="topicState === true">
+            已有今日主题
+            <el-button type="primary" :loading="loadingTodayTopic" @click="handleLoadingTodayTopic" size="small">重新发现今日主题</el-button>
+          </div>
         </div>
-      </div>
-      <div class="summary-control-summary">
-        <div class="summary-control-state" v-if="summaryState === false">
-          未有今日摘要
-          <el-button type="primary" :loading="loadingTodaySummary" @click="handleLoadingTodaySummary" size="small">生成今日摘要</el-button>
+      </el-tooltip>
+      <el-tooltip
+        effect="light"
+        placement="bottom">
+        <div slot="content" style="font-size: 16px;">
+          生成简报需等待约30秒
         </div>
-        <div class="summary-control-state" v-if="summaryState === true">
-          已有今日摘要
-          <el-button type="primary" :loading="loadingTodaySummary" @click="handleLoadingTodaySummary" size="small">重新生成今日摘要</el-button>
+        <div class="summary-control-summary">
+          <div class="summary-control-state" v-if="summaryState === false">
+            未有今日摘要
+            <el-button type="primary" :loading="loadingTodaySummary" @click="handleLoadingTodaySummary" size="small">生成今日摘要</el-button>
+          </div>
+          <div class="summary-control-state" v-if="summaryState === true">
+            已有今日摘要
+            <el-button type="primary" :loading="loadingTodaySummary" @click="handleLoadingTodaySummary" size="small">重新生成今日摘要</el-button>
+          </div>
         </div>
-      </div>
+      </el-tooltip>
     </div>
     <el-table
+      v-loading="loadingData"
       :data="tableData"
       @sort-change="onSortChange"
       @row-click="onRowClick"
@@ -104,6 +119,7 @@ import { generateSummary, generateTopic, getSummary, getSummaryState, getTopicSt
 @Component
 export default class Summary extends Vue {
   tableData = []
+  loadingData = true
   total = 0
   pageNum = 1
   pageSize = 20
@@ -276,6 +292,7 @@ export default class Summary extends Vue {
     getSummary(param).then(res => {
       this.tableData = res.summaryList
       this.total = res.total
+      this.loadingData = false
       this.getTodayTopicState()
       this.getTodaySummaryState()
     }).catch((error) => {
@@ -283,6 +300,7 @@ export default class Summary extends Vue {
         message: error,
         type: 'error'
       })
+      this.loadingData = false
     })
   }
 
@@ -317,8 +335,12 @@ export default class Summary extends Vue {
   align-items: center;
   margin-bottom: 10px;
 }
+.summary-control-topic{
+  outline: none;
+}
 .summary-control-summary{
   margin-left: 30px;
+  outline: none;
 }
 .dialog-container{
   display: flex;

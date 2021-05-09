@@ -29,18 +29,26 @@
           </el-select>分
         </div>
       </el-tooltip>
-      <div class="spider-control">
-        <div class="spider-control-state" v-if="newsState === false">
-          未有今日数据
-          <el-button type="primary" :loading="loadingTodayNews" @click="handleLoadingTodayNews" size="small">爬取今日数据</el-button>
+      <el-tooltip
+        effect="light"
+        placement="bottom">
+        <div slot="content" style="font-size: 16px;">
+          爬取过程需等待约3分钟
         </div>
-        <div class="spider-control-state" v-if="newsState === true">
-          已有今日数据
-          <el-button type="primary" :loading="loadingTodayNews" @click="handleLoadingTodayNews" size="small">再次爬取今日数据</el-button>
+        <div class="spider-control">
+          <div class="spider-control-state" v-if="newsState === false">
+            未有今日数据
+            <el-button type="primary" :loading="loadingTodayNews" @click="handleLoadingTodayNews" size="small">爬取今日数据</el-button>
+          </div>
+          <div class="spider-control-state" v-if="newsState === true">
+            已有今日数据
+            <el-button type="primary" :loading="loadingTodayNews" @click="handleLoadingTodayNews" size="small">再次爬取今日数据</el-button>
+          </div>
         </div>
-      </div>
+      </el-tooltip>
     </div>
     <el-table
+      v-loading="loadingData"
       :data="tableData"
       @sort-change="onSortChange"
       @row-click="onRowClick"
@@ -129,6 +137,7 @@ import { getNews, getNewsState, getSpiderTime, updateSpiderTime, generateNews } 
 @Component
 export default class News extends Vue {
   tableData = []
+  loadingData = true
   total = 0
   pageNum = 1
   pageSize = 20
@@ -259,6 +268,7 @@ export default class News extends Vue {
     getNews(param).then(res => {
       this.tableData = res.newsList
       this.total = res.total
+      this.loadingData = false
       this.getSpiderClock()
       this.getTodayNewsState()
     }).catch((error) => {
@@ -266,6 +276,7 @@ export default class News extends Vue {
         message: error,
         type: 'error'
       })
+      this.loadingData = false
     })
   }
 
@@ -336,6 +347,7 @@ export default class News extends Vue {
   .el-button{
     margin-left: 10px;
   }
+  outline: none;
 }
 .dialog-container{
   display: flex;

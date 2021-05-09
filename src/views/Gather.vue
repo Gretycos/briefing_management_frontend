@@ -1,6 +1,7 @@
 <template>
   <div class="gather-container">
     <el-table
+      v-loading="loadingData"
       :data="tableData"
       @sort-change="onSortChange"
       @row-click="onRowClick"
@@ -56,6 +57,7 @@ import { getGather } from '@/api/api'
 @Component
 export default class Gather extends Vue {
   tableData = []
+  loadingData = true
   total = 0
   pageNum = 1
   pageSize = 20
@@ -126,11 +128,13 @@ export default class Gather extends Vue {
     getGather(param).then(res => {
       this.tableData = res.gatherList
       this.total = res.total
+      this.loadingData = false
     }).catch((error) => {
       this.$message({
         message: error,
         type: 'error'
       })
+      this.loadingData = false
     })
   }
 }
