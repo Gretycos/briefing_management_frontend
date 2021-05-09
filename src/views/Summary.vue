@@ -127,8 +127,6 @@ export default class Summary extends Vue {
       order: this.order
     }
     this.getSummaryData(param)
-    this.getTodayTopicState()
-    this.getTodaySummaryState()
   }
 
   onSortChange (change: any) {
@@ -278,6 +276,8 @@ export default class Summary extends Vue {
     getSummary(param).then(res => {
       this.tableData = res.summaryList
       this.total = res.total
+      this.getTodayTopicState()
+      this.getTodaySummaryState()
     }).catch((error) => {
       this.$message({
         message: error,
