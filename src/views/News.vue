@@ -2,22 +2,32 @@
   <div class="news-container">
     <div class="spider-time-container">
       <div class="spider-time-title">爬虫定时：每天</div>
-      <el-select v-model="hour" placeholder="请选择小时" @change="handleHourChange" size="small">
-        <el-option
-          v-for="item in hours"
-          :key="item"
-          :label="item"
-          :value="item">
-        </el-option>
-      </el-select>时
-      <el-select v-model="minute" placeholder="请选择分钟" @change="handleMinuteChange" size="small">
-        <el-option
-          v-for="item in minutes"
-          :key="item"
-          :label="item"
-          :value="item">
-        </el-option>
-      </el-select>分
+      <el-popover
+        title="提示"
+        width="300"
+        trigger="hover"
+        content="0点-8点基于昨日数据；其余时间基于今日数据。
+        「主题发现」会在「爬虫」执行后的第5分钟开始；「简报生成」会在「主题发现」后的第10分钟开始。"
+        placement="top-start">
+        <div class="spider-time-selector" slot="reference">
+          <el-select v-model="hour" placeholder="" @change="handleHourChange" size="small">
+            <el-option
+              v-for="item in hours"
+              :key="item"
+              :label="item"
+              :value="item">
+            </el-option>
+          </el-select>时
+          <el-select v-model="minute" placeholder="" @change="handleMinuteChange" size="small">
+            <el-option
+              v-for="item in minutes"
+              :key="item"
+              :label="item"
+              :value="item">
+            </el-option>
+          </el-select>分
+        </div>
+      </el-popover>
       <div class="spider-control">
         <div class="spider-control-state" v-if="newsState === false">
           未有今日数据
@@ -196,8 +206,7 @@ export default class News extends Vue {
   }
 
   get hours () {
-    const a: any = Array.from(Array(24), (v, k) => k)
-    a.unshift('*')
+    const a = [0, 2, 4, 21, 22, 23]
     return a
   }
 
