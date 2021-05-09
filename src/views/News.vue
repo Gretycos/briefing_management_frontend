@@ -5,7 +5,7 @@
       <el-tooltip
         effect="light"
         placement="bottom">
-        <div slot="content" style="font-size: 16px;">
+        <div slot="content" class="tooltip-content">
           0点-8点基于昨日数据；其余时间基于今日数据。<br/>
           「主题发现」会在「爬虫」执行后的第5分钟开始；<br/>
           「简报生成」会在「主题发现」后的第10分钟开始。
@@ -32,7 +32,7 @@
       <el-tooltip
         effect="light"
         placement="bottom">
-        <div slot="content" style="font-size: 16px;">
+        <div slot="content" class="tooltip-content">
           爬取过程需等待约3分钟
         </div>
         <div class="spider-control">

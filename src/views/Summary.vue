@@ -4,7 +4,7 @@
       <el-tooltip
         effect="light"
         placement="bottom">
-        <div slot="content" style="font-size: 16px;">
+        <div slot="content" class="tooltip-content">
           主题发现需等待约5分钟
         </div>
         <div class="summary-control-topic">
@@ -21,7 +21,7 @@
       <el-tooltip
         effect="light"
         placement="bottom">
-        <div slot="content" style="font-size: 16px;">
+        <div slot="content" class="tooltip-content">
           生成简报需等待约30秒
         </div>
         <div class="summary-control-summary">

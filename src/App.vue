@@ -36,4 +36,9 @@ html, body{
   width: 100%;
   margin: 0;
 }
+.tooltip-content{
+  font-family: sans-serif, Avenir, Helvetica, Arial;
+  font-size: 14px;
+  color: #2c3e50;
+}
 </style>
