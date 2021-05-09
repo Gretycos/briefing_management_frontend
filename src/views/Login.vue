@@ -11,7 +11,7 @@
       <el-form-item label="记住我7日" class="login-remember">
         <el-checkbox v-model="form.rememberMe"></el-checkbox>
       </el-form-item>
-      <el-button type="primary" @click="submitForm">提交</el-button>
+      <el-button type="primary" @click="submitForm">登入</el-button>
     </el-form>
   </div>
 </template>
