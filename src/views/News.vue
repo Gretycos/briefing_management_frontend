@@ -79,7 +79,7 @@
         label="图片链接"
         width="200">
         <template slot-scope="scope">
-          <div>{{ scope.row.images.length>2? scope.row.images.slice(0,80)+"...]":scope.row.images}}</div>
+          <div>{{ scope.row.images.length>2? scope.row.images.slice(0,30)+"...]":scope.row.images}}</div>
         </template>
       </el-table-column>
       <el-table-column
@@ -180,7 +180,7 @@ export default class News extends Vue {
     this.currentContent = row.content.replaceAll('　　', '　　<br>').replaceAll('。 ', '。<br>').replaceAll('。\\n', '。<br>')
     this.currentImages = row.images.slice(1, -1).replaceAll(',', ', <br>')
     const imagesList = JSON.parse(row.images)
-    this.currentImagesList = imagesList.map(item => {
+    this.currentImagesList = imagesList.map((item: string) => {
       return 'http://39.105.43.226:8091/images' + item
     })
   }
