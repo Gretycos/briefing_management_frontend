@@ -186,7 +186,7 @@ export default class News extends Vue {
     // console.log(row)
     this.dialogVisible = true
     this.currentTitle = row.title
-    this.currentContent = row.content.replaceAll('　　', '　　<br>').replaceAll('。 ', '。<br>').replaceAll('。\\n', '。<br>')
+    this.currentContent = row.content.replace(/\n/g, '<br>').replaceAll('　　', '　　<br>')
     this.currentImages = row.images.slice(1, -1).replaceAll(',', ', <br>')
     const imagesList = JSON.parse(row.images)
     this.currentImagesList = imagesList.map((item: string) => {
@@ -363,7 +363,7 @@ export default class News extends Vue {
     font-weight: bolder;
   }
   img{
-    width: 100%;
+    width: 60%;
     object-fit: contain;
   }
 }
