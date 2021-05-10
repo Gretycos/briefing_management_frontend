@@ -36,7 +36,7 @@
     <el-dialog
       :title="currentDate"
       :visible.sync="dialogVisible"
-      width="60%">
+      width="40%">
       <div class="dialog-container">
         <div class="dialog-item-container">
           <div class="dialog-title">今日主题</div>
@@ -144,7 +144,7 @@ export default class Gather extends Vue {
 .dialog-container{
   display: flex;
   flex-direction: column;
-  text-align: left;
+  text-align: center;
 }
 .dialog-item-container{
   margin-top: 20px;
