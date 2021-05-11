@@ -52,7 +52,7 @@
       :data="tableData"
       @sort-change="onSortChange"
       @row-click="onRowClick"
-      height="600"
+      :height="tableHeight"
       border
       style="width: 100%">
       <el-table-column
@@ -137,6 +137,7 @@ import { getNews, getNewsState, getSpiderTime, updateSpiderTime, generateNews } 
 @Component
 export default class News extends Vue {
   tableData = []
+  tableHeight = window.innerHeight - 320
   loadingData = true
   total = 0
   pageNum = 1
@@ -152,6 +153,10 @@ export default class News extends Vue {
   newsState = false
   loadingTodayNews = false
 
+  created () {
+    window.addEventListener('resize', this.getHeight)
+  }
+
   mounted () {
     const param = {
       pageOffset: (this.pageNum - 1) * this.pageSize,
@@ -159,6 +164,14 @@ export default class News extends Vue {
       order: this.order
     }
     this.getNewsData(param)
+  }
+
+  destroyed () {
+    window.removeEventListener('resize', this.getHeight)
+  }
+
+  getHeight () {
+    this.tableHeight = window.innerHeight - 320
   }
 
   onSortChange (change: any) {

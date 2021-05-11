@@ -41,9 +41,9 @@
       :data="tableData"
       @sort-change="onSortChange"
       @row-click="onRowClick"
-      height="600"
+      :height="tableHeight"
       border
-      style="width: 100%">
+      style="width: 100%;">
       <el-table-column
         fixed="left"
         prop="articleId"
@@ -119,6 +119,7 @@ import { generateSummary, generateTopic, getSummary, getSummaryState, getTopicSt
 @Component
 export default class Summary extends Vue {
   tableData = []
+  tableHeight = window.innerHeight - 320
   loadingData = true
   total = 0
   pageNum = 1
@@ -136,6 +137,10 @@ export default class Summary extends Vue {
   loadingTodaySummary = false
   editing = false
 
+  created () {
+    window.addEventListener('resize', this.getHeight)
+  }
+
   mounted () {
     const param = {
       pageOffset: (this.pageNum - 1) * this.pageSize,
@@ -143,6 +148,14 @@ export default class Summary extends Vue {
       order: this.order
     }
     this.getSummaryData(param)
+  }
+
+  destroyed () {
+    window.removeEventListener('resize', this.getHeight)
+  }
+
+  getHeight () {
+    this.tableHeight = window.innerHeight - 320
   }
 
   onSortChange (change: any) {

@@ -35,7 +35,7 @@ export default class SideBar extends Vue {
   handleClose (key: any, keyPath: any) {
     const menu:any = this.$refs.menu
     menu.open(keyPath)
-    console.log(key, keyPath)
+    // console.log(key, keyPath)
   }
 }
 </script>

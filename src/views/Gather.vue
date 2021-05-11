@@ -5,7 +5,7 @@
       :data="tableData"
       @sort-change="onSortChange"
       @row-click="onRowClick"
-      height="600"
+      :height="tableHeight"
       border
       style="width: 100%">
       <el-table-column
@@ -57,6 +57,7 @@ import { getGather } from '@/api/api'
 @Component
 export default class Gather extends Vue {
   tableData = []
+  tableHeight = window.innerHeight - 320
   loadingData = true
   total = 0
   pageNum = 1
@@ -66,6 +67,10 @@ export default class Gather extends Vue {
   currentDate = ''
   currentTopic = ''
 
+  created () {
+    window.addEventListener('resize', this.getHeight)
+  }
+
   mounted () {
     const param = {
       pageOffset: (this.pageNum - 1) * this.pageSize,
@@ -73,6 +78,14 @@ export default class Gather extends Vue {
       order: this.order
     }
     this.getGatherData(param)
+  }
+
+  destroyed () {
+    window.removeEventListener('resize', this.getHeight)
+  }
+
+  getHeight () {
+    this.tableHeight = window.innerHeight - 320
   }
 
   onSortChange (change: any) {

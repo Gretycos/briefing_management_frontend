@@ -2,7 +2,9 @@
   <el-container class="home-container">
     <el-header class="home-header"><TopBar/></el-header>
     <el-container>
-      <el-aside class="home-aside"><SideBar/></el-aside>
+      <el-aside class="home-aside">
+        <SideBar/>
+      </el-aside>
       <el-container>
         <el-main>
           <div class="page-header">{{this.$route.name}}</div>
@@ -10,7 +12,9 @@
           <router-view/>
         </el-main>
         <el-divider></el-divider>
-        <el-footer><FootBar/></el-footer>
+        <el-footer>
+          <FootBar/>
+        </el-footer>
       </el-container>
     </el-container>
   </el-container>
@@ -53,6 +57,7 @@ export default class Home extends Vue {
 <style scoped lang="scss">
 .home-container{
   width: 100%;
+  height: 100%;
 }
 .home-header{
   width: 100%;
@@ -60,7 +65,6 @@ export default class Home extends Vue {
 }
 .home-aside{
   width: 220px !important;
-  height: 831px;
 }
 .page-header{
   text-align: left;
