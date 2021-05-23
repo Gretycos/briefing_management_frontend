@@ -99,7 +99,7 @@
         </div>
         <div class="dialog-item-container">
           <div class="dialog-title">文章摘要</div>
-          <div class="dialog-item" v-html="currentContent" v-if="!editing"></div>
+          <div class="dialog-item" v-html="currentContent.replaceAll('　　', '　　<br>')" v-if="!editing"></div>
           <el-input type="textarea" autosize v-model="currentContent" maxlength="3000" show-word-limit v-if="editing"></el-input>
         </div>
       </div>
@@ -185,8 +185,8 @@ export default class Summary extends Vue {
     this.currentArticleId = row.articleId
     this.currentTitle = row.title
     this.currentTopic = row.kw.replace('[', '').replace(']', '')
-    this.currentContent = row.summary.replaceAll('　　', '　　<br>')
-    this.originalContent = row.summary.replaceAll('　　', '　　<br>')
+    this.currentContent = row.summary
+    this.originalContent = row.summary
   }
 
   editSummary () {
@@ -230,6 +230,7 @@ export default class Summary extends Vue {
           message: '操作取消',
           type: 'info'
         })
+        this.dialogVisible = false
       })
     }
   }
