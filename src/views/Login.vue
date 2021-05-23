@@ -110,7 +110,7 @@ export default class Login extends Vue {
   flex-direction: column;
   justify-content: center;
   width: auto;
-  margin-top: 20%;
+  //margin-top: 20%;
   //.title {
   //  margin: 0px auto 40px auto;
   //  text-align: center;
